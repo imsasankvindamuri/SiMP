@@ -1,20 +1,24 @@
 [project]
 name = "simp"
-version = "0.1.0"
-description = ""
+version = "0.0.2"
+description = "The Simple Music Player"
 authors = [
     {name = "imsasankvindamuri",email = "imsasankvindamuri@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.13,<4.0.0"
 dependencies = [
-    "python-vlc (>=3.0.21203,<4.0.0)"
+    "python-vlc (>=3.0.21203,<4.0.0)",
     
 ]
 
 [tool.poetry]
 packages = [{include = "simp", from = "src"}]
 
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.15.0"
+pytest = "^8.3.5"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
