@@ -4,20 +4,29 @@ import vlc
 from pathlib import Path
 from mutagen._file import File
 from urllib.parse import urlparse, unquote
+from contextlib import contextmanager
 
 # Written in Helix btw.
 
 class Player:
     def __init__(self) -> None:
 
-        # Private attributes
+        # Private attributes. Triple check any changes you make here.
+        # Do NOT manipulate these manually unless you wish to suffer.
+        # Please use private methods or the provided context managers
+        # instead.
+        #
+        # If you can't find any for your particular need, please
+        # consider adding them: I will credit you and thank you generously.
+        
         self._player = vlc.Instance()
         self._constants = Constants()
         self._playlist : vlc.MediaList = self._player.media_list_new()
+        self._mode = self._constants.NORMAL
 
         # Only 1 public-facing attribute
         self.queue = self._player.media_list_player_new()
-        self.queue.set_playback_mode(self._constants.NORMAL)
+        self.queue.set_playback_mode(self._mode)
         
 
     # The Player should handle:
@@ -60,13 +69,15 @@ class Player:
         """
         match mode:
             case "NORMAL":
-                self.queue.set_playback_mode(self._constants.NORMAL)
+                self._mode = self._constants.NORMAL
             case "LOOP":
-                self.queue.set_playback_mode(self._constants.LOOP)
+                self._mode = self._constants.LOOP
             case "REPEAT":
-                self.queue.set_playback_mode(self._constants.REPEAT)
+                self._mode = self._constants.REPEAT
             case _:
                 raise PlayerError(f"Error: Invalid Command: {mode}")
+
+        self.queue.set_playback_mode(self._mode)
 
 
     # Metadata funcs. Unlike the others, these have return values.
@@ -163,11 +174,13 @@ class Player:
         
     def next(self) -> None:
         self._check_playlist_loaded()
-        self.queue.next()
+        with self._do_in_mode(self._constants.LOOP):
+            self.queue.next()
 
     def prev(self) -> None:
         self._check_playlist_loaded()
-        self.queue.previous()
+        with self._do_in_mode(self._constants.LOOP):
+            self.queue.previous()
 
     def stop(self) -> None:
         self.queue.stop()
@@ -193,6 +206,19 @@ class Player:
             raise InvalidPlaylistError(f"Error: A playlist must be a flat directory with the following file formats \n{
                              [filetype for filetype in self._constants.SUPPORTED_MEDIA_FILETYPES]
                          }.")
+
+    @contextmanager
+    def _do_in_mode(self, mode : vlc.PlaybackMode):
+        """
+        The context manager for this class. It is there to avoid
+        annoying state variables.
+        """
+        old_mode = self._mode
+        self.queue.set_playback_mode(mode)
+        try:
+            yield
+        finally:
+            self.queue.set_playback_mode(old_mode)
 
 class Constants:
     def __init__(self) -> None:

@@ -1,6 +1,6 @@
 [project]
 name = "simp"
-version = "0.0.2"
+version = "0.0.3"
 description = "The Simple Music Player"
 authors = [
     {name = "imsasankvindamuri",email = "imsasankvindamuri@gmail.com"}
