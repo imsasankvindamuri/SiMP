@@ -42,7 +42,7 @@ synchronization of your listening habits. Just you, your music, and a clean inte
 
 2. **Python 3.13+** (check with `python --version`)
 
-3. **`pipx`** (Download with system package manager or with `pip` as shown with **VLC Media Player.**)
+3. **`pipx`** (Download with system package manager as shown with **VLC Media Player.** Alternatively, you can also use `pip`)
 
 ### Install SiMP
 
@@ -142,6 +142,7 @@ SiMP is built around a clean separation of concerns:
 - [ ] Search functionality
 - [ ] Keyboard shortcuts customization
 - [ ] Volume control
+- [ ] Audio Visualizer
 
 ### v1.0.0 - Stable Release
 - [ ] Plugin system
@@ -176,7 +177,7 @@ MIT License - see LICENSE file for details.
 
 - Built with [python-vlc](https://github.com/oaubert/python-vlc) for robust audio playback
 - Metadata handling powered by [Mutagen](https://github.com/quodlibet/mutagen)
-- Written in [Helix](https://helix-editor.com/) btw 😉
+- Written in [Helix](https://helix-editor.com/) (btw) 
 
 ---
 
