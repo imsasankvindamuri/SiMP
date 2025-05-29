@@ -13,13 +13,22 @@ def main() -> None:
     print("Welcome to SiMP - The Simple Music Player")
     print(f"Default music directory: {music_dir.as_posix()}")
     print("Type 'help' to see available commands.")
-    def show_now_playing():
+
+    def show_now_playing() -> None:
         """Helper to display current song info"""
         if song := player.get_current_song():
             idx = player.get_current_index()
-            print(f"\nNow playing [{idx+1}]: {Path(song).name}")
+            print(f"Now playing [{idx+1}]: {Path(song).name}")
         else:
-            print("\nNo song currently playing")
+            print("No song currently playing")
+
+    def show_mdata() -> None:
+        """Helper to display metadata gracefully"""
+
+        mdata_map = player.read_metadata()
+
+        for mdata in mdata_map.keys():
+            print(f"{mdata} : {mdata_map[mdata]}")
 
     while True:
         cmd = input(">>> ").strip().lower()
@@ -31,7 +40,7 @@ def main() -> None:
                     player.play(index)
                 except ValueError:
                     print("Invalid index.")
-                except PlaylistNotLoadedError as e:
+                except PlayerError as e:
                     print(e)
 
             case "pause":
@@ -70,14 +79,17 @@ def main() -> None:
             case "next":
                 try:
                     player.next()
-                except PlaylistNotLoadedError as e:
+                except PlayerError as e:
                     print(e)
 
             case "prev":
                 try:
                     player.prev()
-                except PlaylistNotLoadedError as e:
+                except PlayerError as e:
                     print(e)
+
+            case "mdata":
+                show_mdata()
 
             case "now":
                 show_now_playing()
@@ -94,6 +106,7 @@ Available commands:
   prev   - Play previous track
   exit   - Exit the player
   now    - Show current song
+  mdata  - Show metadata of current song
   help   - Show this message
                 """)
 
